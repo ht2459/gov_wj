@@ -1,6 +1,7 @@
 from selenium import webdriver
 from datetime import datetime
 from bs4 import BeautifulSoup
+from pyvirtualdisplay import Display
 import requests
 import re
 import os
@@ -20,6 +21,7 @@ def extract_url(page, n):
 class PolicyCounter:
     def __init__(self, url):
         self.url = url
+        self.display = Display(visible=0, size=(800, 600)).start()
         self.driver = webdriver.PhantomJS(
             executable_path='/utils/phantomjs-2.1.1-linux-x86_64/bin/phantomjs')  # 设置phantomjs的路径
         self.driver.get(url)
@@ -47,4 +49,5 @@ class PolicyCounter:
         file.close()
 
     def clean_up(self):
+        self.display.stop()
         self.driver.quit()
