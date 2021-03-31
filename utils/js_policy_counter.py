@@ -7,15 +7,15 @@ import re
 import os
 
 
-def extract_url(page, n):
-    policy_url = f'http://sousuo.gov.cn/data?t=zhengcelibrary_gw&q=&timetype=timeqb&mintime=&maxtime=&sort' \
-                 f'=pubtime&sortType=1&searchfield=title&pcodeJiguan=&childtype=&subchildtype=&tsbq=&pubtimeyear' \
-                 f'=&puborg=&pcodeYear=&pcodeNum=&filetype=&p={page}&n={n}&inpro=&bmfl=&dup=&orpro= '
-    response = requests.get(policy_url)
-    soup = BeautifulSoup(response.text, "html.parser")
-    links = re.findall(r'\b(?:https?://)?(?:(?i:[a-z]+\.)+)[^\s,]+\b', str(soup))
+# def extract_url(page, n):
+#     policy_url = f'http://sousuo.gov.cn/data?t=zhengcelibrary_gw&q=&timetype=timeqb&mintime=&maxtime=&sort' \
+#                  f'=pubtime&sortType=1&searchfield=title&pcodeJiguan=&childtype=&subchildtype=&tsbq=&pubtimeyear' \
+#                  f'=&puborg=&pcodeYear=&pcodeNum=&filetype=&p={page}&n={n}&inpro=&bmfl=&dup=&orpro= '
+#     response = requests.get(policy_url)
+#     soup = BeautifulSoup(response.text, "html.parser")
+#     links = re.findall(r'\b(?:https?://)?(?:(?i:[a-z]+\.)+)[^\s,]+\b', str(soup))
 
-    return links
+#     return links
 
 
 class PolicyCounter:
@@ -23,7 +23,7 @@ class PolicyCounter:
         self.url = url
         self.display = Display(visible=0, size=(800, 600)).start()
         self.driver = webdriver.PhantomJS(
-            executable_path='/utils/phantomjs-2.1.1-linux-x86_64/bin/phantomjs')  # 设置phantomjs的路径
+            executable_path='/phantomjs-2.1.1-linux-x86_64/bin/phantomjs')  # 设置phantomjs的路径
         self.driver.get(url)
 
     def policy_counter(self):
@@ -39,7 +39,7 @@ class PolicyCounter:
         return page_count
 
     def take_log(self):
-        if not os.path.exists('/updating_log.txt'):
+        if not os.path.exists('updating_log.txt'):
             file = open('updating_log.txt', 'w+')
 
         else:

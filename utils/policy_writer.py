@@ -12,7 +12,7 @@ def save_policy(policy_dict):
                                   port=3306,
                                   database='gov_policy',
                                   user='你的用户名',
-                                  password='你的密码',
+                                  password='你设置的密码',
                                   connect_timeout=20)
 
     my_cursor = con.cursor()

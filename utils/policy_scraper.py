@@ -1,6 +1,8 @@
 from selenium import webdriver
-from pyvirtualdisplay import Display
+# from pyvirtualdisplay import Display
 from urllib.error import HTTPError
+import warnings
+warnings.filterwarnings('ignore')
 
 
 class PolicyScraper:
@@ -12,8 +14,13 @@ class PolicyScraper:
     def __init__(self, url, seq_id):
         self.url = url
         self.seq_id = seq_id
-        self.display = Display(visible=0, size=(800, 600)).start()
-        self.driver = webdriver.Firefox(executable_path='geckodriver')
+#         self.display = Display(visible=0, size=(800, 600)).start()
+#         self.driver = webdriver.Firefox(executable_path='geckodriver')
+        options = webdriver.ChromeOptions()
+        options.add_argument('--headless')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
+        self.driver = webdriver.Chrome(options=options)
         self.driver.get(url)
 
     def get_info(self):
@@ -37,16 +44,23 @@ class PolicyScraper:
                 "//div[@class='wrap']/table[1]//tr[4]/td[4]").text  # 发布日期
             link['gov_theme_key_word'] = self.driver.find_element_by_xpath(
                 "//div[@class='wrap']/table[1]//table[2]//tr/td[2]").text  # 主题词
+            link['effective_thru'] = self.driver.find_element_by_xpath(
+                "//div[@class='wrap']/table[1]//table[2]//tr/td[4]").text  # 时效
             link['doc_content'] = self.driver.find_element_by_xpath("//*[@id='UCAP-CONTENT']").text  # 内容
             link['doc_attr_outerHTML'] = self.driver.find_element_by_xpath(
-                "/html/body/div[6]/div[3]/table[1]").get_attribute('outerHTML')  # 属性格式
+                "/html/body/div[@class='w1100']/div[@class='wrap']/table[1]").get_attribute('outerHTML')  # 属性格式
             link['doc_content_outerHTML'] = self.driver.find_element_by_xpath(
-                "/html/body/div[6]/div[3]/table[2]/tbody/tr/td[1]").get_attribute('outerHTML')  # 内容_格式
+                "/html/body/div[@class='w1100']/div[@class='wrap']/table[2]/tbody/tr/td[1]").get_attribute('outerHTML')  # 内容_格式
+#             link['doc_content'] = self.driver.find_element_by_xpath("//*[@id='UCAP-CONTENT']").text  # 内容
+#             link['doc_attr_outerHTML'] = self.driver.find_element_by_xpath(
+#                 "/html/body/div[6]/div[3]/table[1]").get_attribute('outerHTML')  # 属性格式
+#             link['doc_content_outerHTML'] = self.driver.find_element_by_xpath(
+#                 "/html/body/div[6]/div[3]/table[2]/tbody/tr/td[1]").get_attribute('outerHTML')  # 内容_格式
 
         except HTTPError:
             return None
 
-        self.display.stop()
+#         self.display.stop()
         self.driver.quit()
 
         return link
